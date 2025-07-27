@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lights and Textures</title>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+
+  <script lang="js">
+
+    const DIM = {
+      width: window.innerWidth,
+      height: window.innerHeight
+    }
+    const bgScene = 0xcccccc
+
+    const scene = new THREE.Scene()
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      DIM.width / DIM.height,
+      0.1,
+      1000
+    )
+
+    camera.position.z = 3
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true })
+    renderer.setSize(DIM.width, DIM.height)
+    renderer.setClearColor(bgScene)
+    document.body.appendChild(renderer.domElement)
+
+    const light = new THREE.DirectionalLight(0xffffff, 1)
+    light.position.set(5, 10, 7.5)
+    scene.add(light)
+
+    const loader = new THREE.TextureLoader()
+    const texturePath = 'assets/textures/wall/'
+
+    const material = new THREE.MeshStandardMaterial({
+      map: loader.load(`${texturePath}wall_albedo.jpg`),
+      aoMap: loader.load(`${texturePath}wall_ao.jpg`),
+      displacementMap: loader.load(`${texturePath}wall_height.jpg`),
+      displacementScale: 0.2,
+      normalMap: loader.load(`${texturePath}wall_normal.jpg`),
+      roughnessMap: loader.load(`${texturePath}wall_roughness.jpg`),
+      side: THREE.DoubleSide
+    })
+    const geometry = new THREE.PlaneGeometry(3, 3, 256, 256)
+    geometry.attributes.uv2 = geometry.attributes.uv
+    const mesh = new THREE.Mesh(geometry, material)
+    scene.add(mesh)
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    controls.enableDamping = true; 
+    controls.dampingFactor = 0.05;
+    controls.enableZoom = true;
+    controls.enableRotate = true;
+    controls.update(); 
+
+
+    function animate() {
+      requestAnimationFrame(animate)
+      renderer.render(scene, camera)
+    }
+    animate()
+
+    window.addEventListener('resize', () => {
+
+      const width = window.innerWidth
+      const height = window.innerHeight
+
+      camera.aspect = width / height
+      camera.updateProjectionMatrix()
+      renderer.setSize(width, height)
+
+    })
+
+  </script>
+</body>
+
+</html>

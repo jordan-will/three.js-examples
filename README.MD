@@ -6,5 +6,6 @@ Here I present my journey in learning about this fantastic library.
 
 01. Basic scene
 02. Mesh and materiais
+03. Lights and Textures
 
 New examples will be added.
